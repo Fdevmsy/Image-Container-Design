@@ -19,9 +19,10 @@ typedef unsigned char uchar;
 class ImgMat {
 private:
   shared_ptr<uchar> data;
-  int height;
-  int width;
-  int channel;
+  int height_;
+  int width_;
+  int channel_;
+
   void init();
 
 public:
@@ -50,7 +51,6 @@ public:
   void set(int x, int y, int c, uchar value);
 
   uchar at(int x, int y, int c) const;
-
 
 };
 

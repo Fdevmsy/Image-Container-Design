@@ -6,59 +6,58 @@
 typedef unsigned char uchar;
 
 void ImgMat::init(){
-  if (height && width && channel) {
-    data = shared_ptr<uchar>(new uchar[height * width * channel]);
+  if (height_ && width_ && channel_) {
+    data = shared_ptr<uchar>(new uchar[height_ * width_ * channel_]);
   }
 }
 
-ImgMat::ImgMat() : height(0), width(0), channel(0), data(0) {}
+ImgMat::ImgMat() : height_(0), width_(0), channel_(0), data(nullptr) {}
 
-ImgMat::ImgMat(int height, int width, const string &ImgType){
-  this->height = height;
-  this->width = width;
-  this->channel = ImgType == "RGB" ? 3 : 1;
-//  this->owner = true;
+ImgMat::ImgMat(int height, int width, const string &ImgType) {
+  height_ = height;
+  width_ = width;
+  channel_ = ImgType == "RGB" ? 3 : 1;
   init();
 }
 
 void ImgMat::create(int height, int width, const string &ImgType) {
-  this->height = height;
-  this->width = width;
-  this->channel = (ImgType == "RGB" ? 3 : 1);
+  height_ = height;
+  width_ = width;
+  channel_ = ImgType == "RGB" ? 3 : 1;
   init();
 }
 
 void ImgMat::set(int x, int y, int c, uchar value) {
-  data.get()[x * width * channel + y * channel + c] = value;
+  data.get()[x * width_ * channel_ + y * channel_ + c] = value;
 }
 
 uchar ImgMat::at(int x, int y, int c) const {
-  return data.get()[x * width * channel + y * channel + c];
+  return data.get()[x * width_ * channel_ + y * channel_ + c];
 }
 
-bool ImgMat::isValid() const { return data != 0; }
+bool ImgMat::isValid() const { return data != nullptr; }
 
 /**
  * deep copy to other
  * @param other
  */
 void ImgMat::copyTo(ImgMat &other) const {
-  if (channel == 3)
-    other.create(height, width, "RGB");
+  if (channel_ == 3)
+    other.create(height_, width_, "RGB");
   else
-    other.create(height, width, "GrayScale");
-  for (int i = 0; i < height * width * channel; i++){
+    other.create(height_, width_, "GrayScale");
+  for (int i = 0; i < height_ * width_ * channel_; i++) {
     other.data.get()[i] = data.get()[i];
   }
 }
 
-int ImgMat::getHeight() const {return height;}
+int ImgMat::getHeight() const { return height_; }
 
-int ImgMat::getWidth() const {return width;}
+int ImgMat::getWidth() const { return width_; }
 
-string ImgMat::getType() const {return channel==3 ? "RGB" : "GrayScale";}
+string ImgMat::getType() const { return channel_ == 3 ? "RGB" : "GrayScale"; }
 
-int ImgMat::getChannel() const{return channel;};
+int ImgMat::getChannel() const { return channel_; };
 
 /**
  * load image from path
@@ -67,7 +66,7 @@ int ImgMat::getChannel() const{return channel;};
  */
 void ImgMat::loadImg(const string &path, const string &imgType) {
   Mat img;
-  img = imread(path, imgType=="RGB");
+  img = imread(path, imgType == "RGB");
   if (!img.data) {
     cout << "cannot load image file at " << path << endl;
     return;

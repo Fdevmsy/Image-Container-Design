@@ -9,13 +9,14 @@
  * @param dst
  */
 void ImgProc::RGB2Gray(const ImgMat &src, ImgMat &dst) {
-  assert(src.isValid()==1);
+  assert(src.isValid() == 1);
   assert(src.getChannel() == 3);
-  for( int x = 0; x < dst.getHeight(); x++ ) {
-    for( int y = 0; y < dst.getWidth(); y++ ) {
+  assert(dst.getChannel() == 1);
+  for (int x = 0; x < dst.getHeight(); x++) {
+    for (int y = 0; y < dst.getWidth(); y++) {
       uchar value = saturate_cast<uchar>(0.11 * src.at(x, y, 0) +
-                                           0.59 * src.at(x, y, 1) +
-                                           0.3 * src.at(x, y, 2));
+                                         0.59 * src.at(x, y, 1) +
+                                         0.3 * src.at(x, y, 2));
       dst.set(x, y, 0, value);
     }
   }
