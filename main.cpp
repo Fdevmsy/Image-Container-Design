@@ -14,40 +14,38 @@ int main(int argc, char **argv) {
     printf("usage: ./ImgLibrary <Image_Path>\n");
     return -1;
   }
-  {
-    /** original input */
-    ImgMat imgMat;
-    imgMat.loadImg(argv[1], "RGB");
-    cout << "Height: " << imgMat.getHeight() << " Width: "
-         << imgMat.getWidth() << " Type: " << imgMat.getType() << endl;
-    ImgProc::Display(imgMat, "input");
 
-    /** RGB to Gray */
-    ImgMat gray(imgMat.getHeight(), imgMat.getWidth(), "GrayScale");
-    ImgProc::RGB2Gray(imgMat, gray);
-    ImgProc::Display(gray, "input (grayscale converted)");
+  /** original input */
+  ImgMat imgMat;
+  imgMat.loadImg(argv[1], "RGB");
+  cout << "Height: " << imgMat.getHeight() << " Width: "
+       << imgMat.getWidth() << " Type: " << imgMat.getType() << endl;
+  ImgProc::Display(imgMat, "input");
 
-    /** shallow copy of gray, shallow copy won't become the owner in this case*/
-    ImgMat sCopy(gray);
+  /** RGB to Gray */
+  ImgMat gray(imgMat.getHeight(), imgMat.getWidth(), "GrayScale");
+  ImgProc::RGB2Gray(imgMat, gray);
+  ImgProc::Display(gray, "input (grayscale converted)");
 
-    /** deep copy of gray*/
-    ImgMat dCopy;
-    gray.copyTo(dCopy);
+  /** shallow copy of gray, shallow copy won't become the owner in this case*/
+  ImgMat sCopy(gray);
 
-    /** apply some mask to gray at the center*/
-    ImgProc::CenterMask(gray, min(gray.getHeight(), gray.getWidth()) / 2);
-    ImgProc::Display(gray, "masked gray");
+  /** deep copy of gray*/
+  ImgMat dCopy;
+  gray.copyTo(dCopy);
 
-    /** check if shallow/deep copy is touched */
-    ImgProc::Display(dCopy, "deep copy of gray (untouched)");
-    ImgProc::Display(sCopy, "shallow copy of gray (affected)");
+  /** apply some mask to gray at the center*/
+  ImgProc::CenterMask(gray, min(gray.getHeight(), gray.getWidth()) / 2);
+  ImgProc::Display(gray, "masked gray");
 
+  /** check if shallow/deep copy is touched */
+  ImgProc::Display(dCopy, "deep copy of gray (untouched)");
+  ImgProc::Display(sCopy, "shallow copy of gray (affected)");
 
+  cout << "number of shallow copy of the ori image: " << sCopy.useCount() << endl;
+  /** compute histogram */
+  auto hist = ImgProc::ComputeHistogram(imgMat);
+  cout << "size of histogram (" << hist.size() << ", " << hist[0].size() << ")" << endl;
 
-    /** compute histogram */
-    auto hist = ImgProc::ComputeHistogram(imgMat);
-    cout << "size of histogram (" << hist.size() << ", " << hist[0].size() << ")" << endl;
-    cout << "number of shallow copy of the ori image: " << sCopy.useCount() << endl;
-  }
   return 0;
 }
